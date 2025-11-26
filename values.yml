@@ -1,0 +1,71 @@
+# Default configuration values for my-app
+
+frontend:
+  image:
+    repository: flasker/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+backend:
+  image:
+    repository: flasker/api
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 5000
+  env:
+    mysqlHost: "database-service"
+    mysqlDatabase: "test_db"
+    mysqlUser: "appuser"
+    mysqlPassword: "apppassword"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+database:
+  image:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3306
+  env:
+    rootPassword: "rootpassword"
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: 1Gi
+    accessMode: ReadWriteOnce
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+nginx:
+  enabled: true
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30000

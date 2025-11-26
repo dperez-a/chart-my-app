@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-backend
+  labels:
+    app: backend
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: backend
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: backend
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.backend.service.port }}
+          name: http
+        env:
+        - name: MYSQL_HOST
+          value: {{ .Values.backend.env.mysqlHost | quote }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.backend.env.mysqlDatabase | quote }}
+        - name: MYSQL_USER
+          value: {{ .Values.backend.env.mysqlUser | quote }}
+        - name: MYSQL_PASSWORD
+          value: {{ .Values.backend.env.mysqlPassword | quote }}
+        resources:
+          {{- toYaml .Values.backend.resources | nindent 10 }}

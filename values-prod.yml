@@ -1,0 +1,55 @@
+# Production environment configuration
+
+frontend:
+  image:
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 3
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+backend:
+  image:
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 3
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+database:
+  image:
+    tag: "8.0"
+  replicaCount: 1
+  env:
+    rootPassword: "prod-secure-password-change-me"
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: "standard"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+nginx:
+  enabled: true
+  service:
+    type: LoadBalancer
+    port: 80

@@ -1,0 +1,40 @@
+# Development environment configuration
+
+frontend:
+  image:
+    tag: dev
+    pullPolicy: Always
+  replicaCount: 1
+  service:
+    type: ClusterIP
+
+backend:
+  image:
+    tag: dev
+    pullPolicy: Always
+  replicaCount: 1
+  service:
+    type: ClusterIP
+
+database:
+  image:
+    tag: "8.0"
+  replicaCount: 1
+  env:
+    rootPassword: "devpassword"
+  persistence:
+    enabled: false
+    size: 500Mi
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+nginx:
+  enabled: true
+  service:
+    type: NodePort
+    nodePort: 30080
